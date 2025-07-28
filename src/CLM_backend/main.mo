@@ -12,13 +12,13 @@ import Debug "mo:base/Debug";
 import T "Types";
 import Escrow "canister:escrow";
 import Ledger "canister:icrc1_ledger_canister";
+import Invoice "canister: invoice";
 
 actor class CLM() = {
 
   stable var users : Trie.Trie<Principal, T.User> = Trie.empty(); //application users
   stable var contracts : Trie.Trie<Nat32, T.Contract> = Trie.empty(); // all contracts
   stable var nextContractId : Nat32 = 1; // to keep track of the next contract ID
-  stable var invoices : Trie.Trie<Nat32, T.Invoice> = Trie.empty();
   stable var connections : Trie.Trie<Principal, Trie.Trie<Principal, T.ConnectionStatus>> = Trie.empty(); // Adjacency list for graph that manages user connections: principal -> list of connected principals
 
   func key(p : Principal) : T.Key<Principal> {
@@ -963,28 +963,7 @@ actor class CLM() = {
   };
 
   //defferred payments
-  //helper function
-  func calculateTotalAmount(items : List.List<T.Item>) : Nat32 {
-    let total = List.foldLeft<T.Item, Nat32>(
-      items,
-      0,
-      func(acc, item) {
-        acc + (item.unit_price * item.quantity);
-      },
-    );
-    return total;
-  };
-
-  func getBalance(userId : Principal) : async Nat {
-    let balance = await Ledger.icrc1_balance_of({
-      owner = userId;
-      subaccount = null;
-    });
-    return balance;
-  };
-
-  //create invoice
-  public shared ({ caller }) func createInvoice(contractId : Nat32, notes : ?Text) : async Result.Result<Text, Text> {
+  public shared ({ caller }) func createInvoice(contractId : Nat32, notes : ?Text) : async Result.Result<Nat32, Text> {
     switch (Trie.find(contracts, { hash = contractId; key = contractId }, Nat32.equal)) {
       case (?contract) {
         if (contract.status != #DeliveryConfirmed) {
@@ -1012,11 +991,12 @@ actor class CLM() = {
                 switch (contract.paymentTerm) {
                   case (?term) {
 
-                    let invoiceToCreate : T.Invoice = {
+                    let args : T.CreateInvoiceArgs = {
                       contractId = contractId;
                       issuer = caller;
                       recipient = buyerParty[0];
                       items = contract.pricing;
+
                       dueDate = switch term {
                         case (#Deferred d) d.due;
                         case _ 0;
@@ -1026,15 +1006,17 @@ actor class CLM() = {
                         case _ 0;
                       };
                       notes = notes;
-                      createdAt = Time.now();
-                      status = #Pending;
-                      totalAmount = calculateTotalAmount(contract.pricing);
-                      updatedAt = Time.now();
                     };
-                    //store invoice
-                    invoices := Trie.put(invoices, { hash = contractId; key = contractId }, Nat32.equal, invoiceToCreate).0;
-                    let _ = await updateContractStatus(contractId, "InvoiceIssued");
-                    return #ok("Invoice created!");
+
+                    switch (await Invoice.createInvoice(args)) {
+                      case (#ok(message)) {
+                        let _ = await updateContractStatus(contractId, "InvoiceIssued");
+                        return #ok(message);
+                      };
+                      case (#err(message)) {
+                        return #err(message);
+                      };
+                    };
                   };
                   case null {
                     return #err("Payment term not set for contract!");
@@ -1051,8 +1033,9 @@ actor class CLM() = {
       };
     };
   };
-
-  //Note: invoice id corresponds to contract id
+  
+  //pay invoice lumpsum
+  //invoice id corresponds to contract id
   public shared ({ caller }) func payInvoice(contractId : Nat32) : async Result.Result<Text, Text> {
     switch (Trie.find(contracts, { hash = contractId; key = contractId }, Nat32.equal)) {
       case (null) {
@@ -1062,141 +1045,32 @@ actor class CLM() = {
         if (contract.status != #InvoiceIssued) {
           return #err("Contract not in correct state!");
         };
-        switch (Trie.get(invoices, { key = contractId; hash = contractId }, Nat32.equal)) {
-          case (null) {
-            #err("Invoice not found");
-          };
-          case (?invoice) {
-            if (caller != invoice.recipient) {
-              return #err("Not permitted!");
-            };
-            //verify recipient balance is in range
-            //consider transfer fees
-            let callerBal = await getBalance(caller);
-            if (callerBal < Nat32.toNat(invoice.totalAmount)) {
-              return #err("Insufficient Balance");
-            };
-            //transfer from args
-            let transferFromArgs : Ledger.TransferFromArgs = {
-              from = {
-                owner = caller;
-                subaccount = null;
-              };
-              memo = null;
-              amount = Nat32.toNat(invoice.totalAmount);
-              spender_subaccount = null;
-              fee = null;
-              to = { owner = invoice.issuer; subaccount = null };
-              created_at_time = null;
-            };
 
-            //transfer
-            let transferFromResult = await Ledger.icrc2_transfer_from(transferFromArgs);
-            switch (transferFromResult) {
-              case (#Err(transferError)) {
-                switch (transferError) {
-                  case (#BadFee(info)) {
-                    return #err("Bad fee error. Expected fee: " # debug_show (info.expected_fee));
-                  };
-                  case (#BadBurn(info)) {
-                    return #err("Bad burn error. Minimum burn amount: " # debug_show (info.min_burn_amount));
-                  };
-                  case (#InsufficientFunds(info)) {
-                    return #err("Insufficient funds. Current balance: " # debug_show (info.balance));
-                  };
-                  case (#TooOld) {
-                    return #err("Transaction is too old");
-                  };
-                  case (#CreatedInFuture(info)) {
-                    return #err("Transaction created in future. Ledger time: " # debug_show (info.ledger_time));
-                  };
-                  case (#Duplicate(info)) {
-                    return #err("Duplicate transaction. Duplicate of block: " # debug_show (info.duplicate_of));
-                  };
-                  case (#TemporarilyUnavailable) {
-                    return #err("Service temporarily unavailable");
-                  };
-                  case (#GenericError(info)) {
-                    return #err("Generic error. Code: " # debug_show (info.error_code) # ", Message: " # info.message);
-                  };
-                  case (#InsufficientAllowance(info)) {
-                    return #err("Insufficient allowance. Allowance: " # debug_show (info.allowance));
-                  };
-                };
-              };
-              case (#Ok(blockIndex)) {
-                // Update the invoice status to Transferred
-                let updatedInvoice : T.Invoice = {
-                  contractId = invoice.contractId;
-                  issuer = invoice.issuer;
-                  recipient = invoice.recipient;
-                  dueDate = invoice.dueDate;
-                  items = invoice.items;
-                  totalAmount = invoice.totalAmount;
-                  status = #Paid;
-                  createdAt = invoice.createdAt;
-                  updatedAt = Time.now();
-                  notes = invoice.notes;
-                  penalty = invoice.penalty;
-                };
-                //update invoice
-                invoices := Trie.put(invoices, { key = contractId; hash = contractId }, Nat32.equal, updatedInvoice).0;
-                //update contract status
-                let _ = updateContractStatus(contractId, "Complete");
-                #ok("Transferred: " #debug_show (blockIndex));
-              };
+        switch (await getPartyByRole(#Buyer, contract.parties)) {
+          case (#err(message)) {
+            return #err(message);
+          };
+          case (#ok(buyerParty)) {
+            if (buyerParty[0] != caller) {
+              return #err("Only buyer can pay invoice");
             };
           };
         };
+
+        switch (await Invoice.payInvoice(contractId)) {
+          case (#ok(message)) {
+            let _ = await updateContractStatus(contractId, "Complete");
+            return #ok(message);
+          };
+          case (#err(message)) {
+            return #err(message);
+          };
+        }
+
       };
     };
   };
-
-  //handles overdue invoices
-  public func handleOverdue() : async () {
-    let now = Time.now();
-    let invoicesArray = Trie.toArray<Nat32, T.Invoice, { invoiceId : Nat32; invoice : T.Invoice }>(
-      invoices,
-      func(k, v) = ({ invoiceId = k; invoice = v }),
-    );
-
-    let overdue = Array.filter<({ invoiceId : Nat32; invoice : T.Invoice })>(
-      invoicesArray,
-      func x = x.invoice.dueDate < now and x.invoice.status == #Pending,
-    );
-
-    if (overdue.size() != 0) {
-      for (item in overdue.vals()) {
-        let invoice = item.invoice;
-        let overdueDays = (now - invoice.dueDate) / (24 * 60 * 60 * 1_000_000_000);
-        let penaltyAmount = invoice.penalty * Nat32.fromIntWrap(overdueDays);
-        let updatedInvoice : T.Invoice = {
-          contractId = invoice.contractId;
-          issuer = invoice.issuer;
-          recipient = invoice.recipient;
-          dueDate = invoice.dueDate;
-          items = invoice.items;
-          totalAmount = invoice.totalAmount + penaltyAmount;
-          status = #Overdue;
-          createdAt = invoice.createdAt;
-          updatedAt = now;
-          notes = invoice.notes;
-          penalty = invoice.penalty;
-        };
-        invoices := Trie.put(invoices, { key = item.invoiceId; hash = item.invoiceId }, Nat32.equal, updatedInvoice).0;
-
-      };
-    } else {
-      return;
-    };
-  };
-
-  //get single invoice
-  public shared func getInvoice(invoiceId : Nat32) : async ?T.Invoice {
-    return Trie.get(invoices, { key = invoiceId; hash = invoiceId }, Nat32.equal);
-  };
-
-  //get all invoices for user
+  //get invoices
   public shared func getInvoices(principal : Principal) : async Result.Result<[T.Invoice], Text> {
     var invoicesList = List.nil<T.Invoice>();
     switch (await getUser(principal)) {
@@ -1206,7 +1080,7 @@ actor class CLM() = {
       case (?user) {
         let userContracts = List.toArray<Nat32>(user.contracts);
         for (contractId in userContracts.vals()) {
-          switch (await getInvoice(contractId)) {
+          switch (await Invoice.getInvoice(contractId)) {
             case (?invoice) {
               invoicesList := List.push<T.Invoice>(invoice, invoicesList);
             };
@@ -1220,12 +1094,6 @@ actor class CLM() = {
 
     let invoicesArray = List.toArray<T.Invoice>(invoicesList);
     return #ok(invoicesArray);
-  };
-
-  // This function is called periodically by the system
-  // to handle overdue invoices and apply penalties.
-  system func heartbeat() : async () {
-    await handleOverdue();
   };
 
 };

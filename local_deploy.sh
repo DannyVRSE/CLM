@@ -42,6 +42,7 @@ dfx deploy icrc1_index_canister --argument "(opt variant { Init = record { ledge
 
 # Deploy other canisters
 dfx deploy escrow
+dfx deploy invoice
 dfx deploy internet_identity
 dfx deploy CLM_frontend
 
