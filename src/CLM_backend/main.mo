@@ -19,6 +19,7 @@ actor class CLM() = {
   stable var contracts : Trie.Trie<Nat32, T.Contract> = Trie.empty(); // all contracts
   stable var nextContractId : Nat32 = 1; // to keep track of the next contract ID
   stable var invoices : Trie.Trie<Nat32, T.Invoice> = Trie.empty();
+  stable var connections : Trie.Trie<Principal, Trie.Trie<Principal, T.ConnectionStatus>> = Trie.empty(); // Adjacency list for graph that manages user connections: principal -> list of connected principals
 
   func key(p : Principal) : T.Key<Principal> {
     { hash = Principal.hash p; key = p };
@@ -45,9 +46,6 @@ actor class CLM() = {
     };
   };
   //end of testing functions
-
-  // Adjacency list for user-user connections: principal -> list of connected principals
-  stable var connections : Trie.Trie<Principal, Trie.Trie<Principal, T.ConnectionStatus>> = Trie.empty();
 
   //add user
   public shared ({ caller }) func addUser(name : Text, email : Text, phone : Text, address : Text, bio : Text) : async Result.Result<Text, Text> {
@@ -480,6 +478,10 @@ actor class CLM() = {
         var invitedCount : Nat = 0;
 
         label inviteLoop for (p in parties.vals()) {
+          //check if invitee is caller and skip
+          if (p.principal == caller) {
+            continue inviteLoop;
+          };
           // Check if invitee exists
           switch (Trie.get(users, key(p.principal), Principal.equal)) {
             case (null) {
@@ -487,6 +489,24 @@ actor class CLM() = {
               continue inviteLoop;
             };
             case (?invitee) {
+              //Check if party is a mutual connection
+              switch (Trie.get(connections, key(caller), Principal.equal)) {
+                case (?userConnections) {
+                  switch (Trie.get(userConnections, key(p.principal), Principal.equal)) {
+                    case (?status) {
+                      if (status != #Accepted) {
+                        return #err("You can only invite connected users. Make sure all invitations are mutuals!");
+                      };
+                    };
+                    case null {
+                      return #err("You can only invite connected users. Make sure all invitations are mutuals!");
+                    };
+                  };
+                };
+                case null {
+                  return #err("You have no connections to invite parties.");
+                };
+              };
               // Check if party already exists
               switch (Trie.get(updatedParties, key(p.principal), Principal.equal)) {
                 case (?_) {
