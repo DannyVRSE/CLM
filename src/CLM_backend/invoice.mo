@@ -123,7 +123,7 @@ actor class Invoice() = this {
   //calculate penalty
   //add penalty to Totalvalue
 
-  public func handleOverdue() : async () {
+  func handleOverdue() : async () {
     let now = Time.now();
     let invoicesArray = Trie.toArray<Nat32, T.Invoice, { invoiceId : Nat32; invoice : T.Invoice }>(
       invoices,
