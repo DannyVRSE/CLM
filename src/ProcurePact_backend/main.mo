@@ -10,13 +10,13 @@ import Bool "mo:base/Bool";
 import Array "mo:base/Array";
 import Debug "mo:base/Debug";
 import T "Types";
+import LT "ICRC";
 import Escrow "canister:escrow";
-import Ledger "canister:icrc1_ledger_canister";
 import Invoice "canister:invoice";
 import Credit "canister:credit";
 
 persistent actor class CLM() = {
-
+  transient let Ledger = actor "cngnf-vqaaa-aaaar-qag4q-cai" : LT.Actor;  //ckUSDT ledger
   var users : Trie.Trie<Principal, T.User> = Trie.empty(); //application users
   var contracts : Trie.Trie<Nat32, T.Contract> = Trie.empty(); // all contracts
   var nextContractId : Nat32 = 1; // to keep track of the next contract ID

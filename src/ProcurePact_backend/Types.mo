@@ -2,7 +2,7 @@ import Trie "mo:base/Trie";
 import Text "mo:base/Text";
 import List "mo:base/List";
 
-module Types {
+module {
   public type Key<K> = Trie.Key<K>;
 
   public type User = {
