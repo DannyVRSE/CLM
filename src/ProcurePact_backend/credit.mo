@@ -6,11 +6,14 @@ import Int "mo:base/Int";
 import Time "mo:base/Time";
 import Trie "mo:base/Trie";
 import Invoice "canister:invoice";
-import Ledger "canister:icrc1_ledger_canister";
 import T "Types";
+import LT "ledger";
 
 //handles credit transactions
 persistent actor class Credit() = this {
+
+  //ckusdt ledger
+  transient let Ledger = actor "cngnf-vqaaa-aaaar-qag4q-cai" : LT.Self;
 
   //stable variables to keep track of credit records
   var credit_records : Trie.Trie<Nat32, T.CreditRecord> = Trie.empty();

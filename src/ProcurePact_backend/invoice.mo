@@ -4,11 +4,14 @@ import Trie "mo:base/Trie";
 import Result "mo:base/Result";
 import Time "mo:base/Time";
 import List "mo:base/List";
-import Ledger "canister:icrc1_ledger_canister";
 import Array "mo:base/Array";
 import Error "mo:base/Error";
+import LT "ledger";
 
-persistent actor class Invoice() = this {
+shared persistent actor class Invoice() = this {
+
+  //ckusdt ledger
+  transient let Ledger = actor "cngnf-vqaaa-aaaar-qag4q-cai" : LT.Self;
 
   var invoices : Trie.Trie<Nat32, T.Invoice> = Trie.empty();
 
@@ -76,7 +79,7 @@ persistent actor class Invoice() = this {
           return #err("CollateralizedInvoice");
         } else {
           // Not collateralized, payment is made to the issuer
-          let transferFromArgs : Ledger.TransferFromArgs = {
+          let transferFromArgs : LT.TransferFromArgs = {
             from = {
               owner = invoice.recipient;
               subaccount = null;
@@ -142,10 +145,10 @@ persistent actor class Invoice() = this {
           collateralized = true;
         };
         invoices := Trie.put(invoices, { key = invoiceId; hash = invoiceId }, Nat32.equal, updatedInvoice).0;
-        return #ok("Successfully collateralized invoice!")
+        return #ok("Successfully collateralized invoice!");
       };
       case (null) {
-        return #err("Invoice not found!")
+        return #err("Invoice not found!");
       };
     };
   };
