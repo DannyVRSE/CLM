@@ -10,12 +10,14 @@ import Bool "mo:base/Bool";
 import Array "mo:base/Array";
 import Debug "mo:base/Debug";
 import T "Types";
+import LT "ledger";
 import Escrow "canister:escrow";
-import Ledger "canister:icrc1_ledger_canister";
 import Invoice "canister:invoice";
 import Credit "canister:credit";
 
 persistent actor class CLM() = {
+
+  transient let Ledger = actor "cngnf-vqaaa-aaaar-qag4q-cai" : LT.Self;
 
   var users : Trie.Trie<Principal, T.User> = Trie.empty(); //application users
   var contracts : Trie.Trie<Nat32, T.Contract> = Trie.empty(); // all contracts
@@ -1067,7 +1069,7 @@ persistent actor class CLM() = {
           case (?invoice) {
             if (invoice.collateralized) {
               // Transfer tokens to the credit canister principal
-              let transferFromArgs : Ledger.TransferFromArgs = {
+              let transferFromArgs : LT.TransferFromArgs = {
                 from = {
                   owner = invoice.recipient;
                   subaccount = null;

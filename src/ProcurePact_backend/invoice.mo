@@ -4,13 +4,14 @@ import Trie "mo:base/Trie";
 import Result "mo:base/Result";
 import Time "mo:base/Time";
 import List "mo:base/List";
-import Ledger "canister:icrc1_ledger_canister";
 import Array "mo:base/Array";
 import Error "mo:base/Error";
-import Debug "mo:base/Debug";
-import ICRC7 "mo:icrc7-mo";
+import LT "ledger";
 
-persistent actor class Invoice() = this {
+shared persistent actor class Invoice() = this {
+
+  //ckusdt ledger
+  transient let Ledger = actor "cngnf-vqaaa-aaaar-qag4q-cai" : LT.Self;
 
   var invoices : Trie.Trie<Nat32, T.Invoice> = Trie.empty();
 
@@ -92,7 +93,7 @@ persistent actor class Invoice() = this {
           return #err("CollateralizedInvoice");
         } else {
           // Not collateralized, payment is made to the issuer
-          let transferFromArgs : Ledger.TransferFromArgs = {
+          let transferFromArgs : LT.TransferFromArgs = {
             from = {
               owner = invoice.recipient;
               subaccount = null;
@@ -141,8 +142,6 @@ persistent actor class Invoice() = this {
   public shared ({ caller }) func collateralize(invoiceId : Nat32) : async Result.Result<Text, Text> {
     switch (Trie.get(invoices, { key = invoiceId; hash = invoiceId }, Nat32.equal)) {
       case (?invoice) {
-        Debug.print(debug_show invoice.issuer);
-        Debug.print(debug_show caller);
         if (caller != invoice.issuer) {
           return #err("Not allowed!");
         };
