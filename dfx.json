@@ -2,7 +2,8 @@
   "canisters": {
     "ProcurePact_backend": {
       "main": "src/ProcurePact_backend/main.mo",
-      "type": "motoko"
+      "type": "motoko",
+      "dependencies": ["escrow","invoice","credit"]
     },
     "ProcurePact_frontend": {
       "dependencies": [
@@ -35,7 +36,8 @@
     },
     "credit": {
       "main": "src/ProcurePact_backend/credit.mo",
-      "type": "motoko"
+      "type": "motoko",
+      "dependencies": ["invoice"]
     }
   },
   "defaults": {
