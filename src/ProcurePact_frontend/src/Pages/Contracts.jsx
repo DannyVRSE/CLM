@@ -208,6 +208,7 @@ const Contracts = () => {
             {activeTab === "invitations" && (
               <div className="invitations-contracts-tab">
                 {invitedContracts.length > 0 ? (
+                  <div className="contract-table-container">
                   <table className="contract-table">
                     <thead className="contract-thead">
                       <tr className="contract-tr">
@@ -264,6 +265,7 @@ const Contracts = () => {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 ) : (
                   <p className="empty-state">No invitations found.</p>
                 )}

@@ -8,7 +8,7 @@
   justify-content: space-between;
   padding: 2.5rem 2rem;
   position: relative;
-  overflow:visible
+  overflow: visible;
 }
 
 .info-container {
@@ -37,8 +37,7 @@
   font-weight: 500;
   color: #100c0c;
   font-style: italic;
-  
-  
+
   border-radius: 10px;
   display: inline-block;
   margin-top: 0;
@@ -62,7 +61,6 @@
   margin-bottom: 0;
   position: relative; /* Allows positioning relative to its normal position */
   left: 30px; /* Moves the image 20px to the right */
-  
 }
 
 @media (max-width: 900px) {
@@ -84,5 +82,13 @@
   }
   .info-container p {
     font-size: 1rem;
+  }
+}
+@media (max-width: 850px) {
+  .image-container {
+    display: none;
+  }
+  .main-intro-container {
+    max-height:fit-content;
   }
 }

@@ -51,11 +51,11 @@ const InvoiceList = ({ invoices }) => {
         <thead>
           <tr>
             <th>Invoice ID</th>
-            <th>Recipient</th>
-            <th>Created At</th>
-            <th>Due Date</th>
-            <th>Amount</th>
-            <th>Status</th>
+            <th className="hide-mobile">Recipient</th>
+            <th className="hide-mobile">Created At</th>
+            <th className="hide-mobile">Due Date</th>
+            <th className="hide-mobile">Amount</th>
+            <th className="hide-mobile">Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -63,25 +63,31 @@ const InvoiceList = ({ invoices }) => {
           {invoices.map((invoice, index) => (
             <tr key={index}>
               <td>{invoice.contractId}</td>
-              <td className="recipient-cell">
-                <div className="recipient-text">{invoice.recipient.toText()}</div>
+              <td className="recipient-cell hide-mobile">
+                <div className="recipient-text">
+                  {invoice.recipient.toText()}
+                </div>
               </td>
-              <td>{formatNanoDate(invoice.createdAt)}</td>
-              <td>{formatNanoDate(invoice.dueDate)}</td>
-              <td>{invoice.totalAmount}</td>
-              <td>{Object.keys(invoice.status)[0]}</td>
+              <td className="hide-mobile">
+                {formatNanoDate(invoice.createdAt)}
+              </td>
+              <td className="hide-mobile">{formatNanoDate(invoice.dueDate)}</td>
+              <td className="hide-mobile">{invoice.totalAmount}</td>
+              <td className="hide-mobile">{Object.keys(invoice.status)[0]}</td>
+
               <td>
                 <div className="invoice-button">
                   <button onClick={() => handleClick(invoice.contractId)}>
                     View
                   </button>
 
-                  {invoice.issuer.toText() === principal.toText() &&
+                  {invoice.issuer.toText() === principal.toText() && (
                     <button
                       onClick={() => handleAdvanceClick(invoice.contractId)}
                     >
                       Get Advance
-                    </button>}
+                    </button>
+                  )}
                 </div>
               </td>
             </tr>

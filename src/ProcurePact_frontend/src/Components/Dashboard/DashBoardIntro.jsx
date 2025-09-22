@@ -10,7 +10,7 @@ const DashBoardIntro = () => {
       <div className="info-container">
         <h1>Welcome, {user?.name || "User"}!</h1>
         <p className="principal">Principal: {principal?.toText() || "N/A"}</p>
-        <p>Ready to manage your contracts and parties?</p>
+        <p className="intro-text">Ready to manage your contracts and parties?</p>
       </div>
       <div className="image-container">
         <img src="Sitted-girl-intro.png" alt="Dashboard intro" />

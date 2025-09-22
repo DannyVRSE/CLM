@@ -329,6 +329,8 @@
 @media (max-width: 700px) {
   .contract-container {
     padding: 12px;
+    margin-left: 0;
+    margin: auto;
   }
   .contract-table-heading {
     font-size: 18px;
@@ -341,5 +343,17 @@
   .contract-table td {
     padding: 10px;
     font-size: 14px;
+  }
+}
+
+@media (max-width: 850px) {
+  .contract-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .contract-table {
+    min-width: 600px;
+    width: max-content;
+    display: block;
   }
 }

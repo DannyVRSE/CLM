@@ -1,8 +1,9 @@
 .invoice-view-image-container {
   margin: 0;
   padding: 0 0 5px 0;
-  width: 100%;
+  width: 95%;
   height: 89vh;
+  background-color: #fff;
 }
 
 .invoice-view-image-container .back-button {
@@ -46,4 +47,16 @@
   height: 76vh;
   overflow: auto;
   border-radius: 10px;
+}
+
+@media (max-width: 850px) {
+  .invoice-items-info {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .invoice-items-info .pricing-table {
+    min-width: 600px;
+    width: max-content;
+    display: block;
+  }
 }

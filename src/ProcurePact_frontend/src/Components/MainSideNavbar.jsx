@@ -155,7 +155,7 @@ const MainSideNavbar = () => {
         <span>Procure Pact</span>
       </div>
       {/* Menu Items */}
-      <div className="menu-items">
+      <div className="side-menu-items">
         {menuItems.map((item, index) => (
           <div
             key={index}

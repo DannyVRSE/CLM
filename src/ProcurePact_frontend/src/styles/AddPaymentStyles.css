@@ -100,7 +100,7 @@ input.form-control:focus {
 @media (max-width: 600px) {
   .contract-payment-container {
     padding: 1.2rem 0.5rem;
-    max-width: 98vw;
+    max-width: 100%;
   }
   .contract-payment-container .contract-section-heading {
     font-size: 1.2rem;

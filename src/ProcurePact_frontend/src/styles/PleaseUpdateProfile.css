@@ -41,3 +41,26 @@
   text-align: center;
   margin: 0;
 }
+
+@media (max-width: 500px) {
+ .please-profile-image{
+  display: none;
+ }
+
+ .please-profile-text {
+  position: absolute;
+  top: 50%;            /* Adjust as needed */
+  left: 46.5%;           /* Adjust as needed */
+  
+  font-size: 3rem;
+  color: #f30707;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-weight: bold;
+  height: 300px;
+  box-shadow: none;
+ 
+
+}
+
+}
