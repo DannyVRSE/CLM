@@ -39,7 +39,7 @@ A built-in OISY wallet enables seamless deposits and withdrawals of tokens.
 
 ### Progressive Web App (PWA)
 
-Our Progressive Web App (PWA) works on mobile, desktop, and web, offering native-like performance across devices.
+Our Progressive Web App (PWA) works seamlessly on mobile, desktop, and web, delivering native-like performance across all devices.
 
 ### Internet Identity Authentication
 
@@ -48,7 +48,7 @@ Secure on-chain authentication with Internet Identity.
 ## Beta (Partially Implemented)
 
 - AI chatbot for real-time business intelligence - ProcureChat
-- Tokenization of invoices to NFTs for third party asset trading
+- Tokenization of invoices to NFTs for third-party asset trading
 
 ## Tech Stack
 
@@ -71,7 +71,7 @@ Issues and collects loans.
 
 ### Escrow (Mainnet Canister id: 6dhan-uaaaa-aaaab-abspq-cai)
 
-Locks tokens and releases them for vendor agreements with On-Delivery Payment term.
+Locks tokens and releases them for vendor agreements with the On-Delivery Payment term.
 
 ### ProcurePact_frontend (Mainnet Canister id: 6nfnf-pqaaa-aaaab-absoq-cai)
 
@@ -79,7 +79,7 @@ User Interface. Allows multiplatform access to the web app.
 
 ## Running the Project Locally
 
-⚠️Note: The main branch is for testing and uses an ICRC ledger to deploy a dummy token for local testing. The mainnet branch uses the 3rd party ckUSDT ledger with id ```cngnf-vqaaa-aaaar-qag4q-cai``` on the mainnet.
+⚠️Note: The main branch is for testing and uses an ICRC ledger to deploy a dummy token for local testing. The "mainnet" branch utilizes the third-party ckUSDT ledger with ID ```cngnf-vqaaa-aaaar-qag4q-cai``` on the mainnet. This is the deployed branch.
 
 ### Prerequisites
 
