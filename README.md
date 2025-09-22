@@ -53,7 +53,7 @@ Secure on-chain authentication with Internet Identity.
 ## Tech Stack
 
 Backend: Motoko
-Frontend: React+Vite
+Frontend: React+Vite (PWA)
 
 ## Canister Structure
 
@@ -63,7 +63,7 @@ Manages users and vendor agreement contracts.
 
 ### Invoice (Mainnet Canister id: 3742i-7iaaa-aaaab-absqa-cai)
 
-Handles all creation and updating of invoices.
+Handles all creation and updating of invoices. The canister also collateralizes invoices.
 
 ### Credit (Mainnet Canister id: 6eggz-zyaaa-aaaab-abspa-cai)
 
@@ -75,7 +75,7 @@ Locks tokens and releases them for vendor agreements with On-Delivery Payment te
 
 ### ProcurePact_frontend (Mainnet Canister id: 6nfnf-pqaaa-aaaab-absoq-cai)
 
-User Interface.
+User Interface. Allows multiplatform access to the web app.
 
 ## Running the Project Locally
 
