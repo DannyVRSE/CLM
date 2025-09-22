@@ -2,7 +2,6 @@
   /* background: linear-gradient(to right, #f7f9fc, #e8eff5); */
   background-color: #fff;
   font-family: Arial, sans-serif;
-  max-height: 100vh;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -91,25 +90,6 @@
   
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .heroHeading h1 {
-    font-size: 32px;
-  }
-
-  .contentSection {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .infoContainer {
-    max-width: 100%;
-  }
-
-  .imageContainer img {
-    max-width: 100%;
-  }
-}
 
 
 @media (min-width: 1600px) {
@@ -139,5 +119,45 @@
     gap: 60px;
     padding-left: 40px;
     padding-right: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroContainer{
+    height: fit-content;
+  }
+  .heroHeading h1 {
+    font-size: 35px;
+    margin-top: 10px;
+  }
+
+  .contentSection {
+    flex-direction: column-reverse; /* Image comes first, then info */
+    text-align: center;
+  }
+
+  .infoContainer {
+    max-width: 100%;
+  }
+  .infoContainer p{
+    font-size: 20px;
+  }
+
+  .imageContainer img {
+    max-width: 100%;
+  }
+  .heroHeading p{
+    font-size: 20px;
+}
+
+.infoContainer .heroButton {
+    width: 90%;           /* Make button wide and easy to tap */
+    max-width: 350px;      /* Prevent it from being too wide */
+    font-size: 18px;       /* Slightly larger text for mobile */
+    padding: 16px 0;       /* Taller for easier tapping */
+    margin: 24px auto 0 auto; /* Center horizontally, more top margin */
+    display: block;        /* Ensure it centers */
+    border-radius: 12px;   /* More rounded corners for mobile */
+    box-shadow: 0 4px 16px rgba(255, 165, 0, 0.18);
   }
 }

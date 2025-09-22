@@ -65,7 +65,7 @@
   border-radius: 10px;
   padding: 30px 20px;
   width: 220px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease;
 }
 
@@ -144,7 +144,83 @@
 
   .problemImage img {
     max-width: 800px; /* scale up images */
+  }
+}
 
-    
+@media (max-width: 1040px) {
+  .contentContainer {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .problemImage {
+    display: none;
+  }
+
+  .problemSection h2 {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+
+  .problemText p {
+    font-size: 20px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+
+  .statsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    justify-items: center;
+    margin-bottom: 32px;
+  }
+
+  .statCard {
+    width: 95%;
+    padding: 32px 12px;
+  }
+
+  .statCard h3 {
+    font-size: 32px;
+  }
+
+  .statCard p {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contentContainer {
+    width: 100%;
+  }
+
+  .problemText {
+    min-width: 0;
+    width: 100%;
+  }
+  .problemText p {
+    width: 100%;
+  }
+  .statsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .statCard {
+    width: 90%;
+    max-width: 350px;
+    padding: 28px 8px;
+  }
+
+  .statCard h3 {
+    font-size: 28px;
+  }
+
+  .statCard p {
+    font-size: 18px;
   }
 }

@@ -59,7 +59,6 @@
   width: 500px;
   height: auto;
   border-radius: 12px;
- 
 }
 
 /* --------- Bigger screens (1920px and up) --------- */
@@ -81,5 +80,25 @@
   .finalCtaSection {
     padding: 80px 60px;
     gap: 60px;
+  }
+}
+@media (max-width: 1024px) {
+  .ctaImage {
+    width: 80vw; /* or a percentage like 90% */
+    max-width: 400px; /* optional: set a max width */
+    height: auto; /* maintain aspect ratio */
+    display: block;
+    margin: 0 auto; /* center the image */
+  }
+}
+@media (max-width: 768px) {
+  .ctaImageWrapper {
+    display: none;
+  }
+  .ctaContent {
+    min-width: 0;
+  }
+  .ctaButton {
+    width: 100%;
   }
 }

@@ -7,6 +7,8 @@ import { useStore } from "../store/useStore";
 import { Principal } from "@dfinity/principal";
 import { ProcurePact_backend } from "declarations/ProcurePact_backend";
 import { ledgerStore } from "../store/ledgerStore";
+import PleaseUpdateProfile from "../Components/PleaseUpdateProfile";
+
 const tabOptions = [
   { label: "My Contracts", key: "myContracts" },
   { label: "Invitations", key: "invitations" },
@@ -138,8 +140,9 @@ const Contracts = () => {
             {tabOptions.map((tab) => (
               <button
                 key={tab.key}
-                className={`contracts-tab-btn${activeTab === tab.key ? " active" : ""
-                  }`}
+                className={`contracts-tab-btn${
+                  activeTab === tab.key ? " active" : ""
+                }`}
                 onClick={() => setActiveTab(tab.key)}
               >
                 {tab.label}
@@ -218,10 +221,7 @@ const Contracts = () => {
                     </thead>
                     <tbody className="contract-tbody">
                       {invitedContracts.map((contract) => (
-                        <tr
-                          key={contract.contractId}
-
-                        >
+                        <tr key={contract.contractId}>
                           <td>{contract.contractId}</td>
                           <td>
                             {(() => {
@@ -272,7 +272,7 @@ const Contracts = () => {
           </div>
         </div>
       ) : (
-        <p className="empty-state">Update profile to view contracts</p>
+        <PleaseUpdateProfile />
       )}
       {!isAuthenticated && <p className="empty-state"> Please log in</p>}
       <Modal
