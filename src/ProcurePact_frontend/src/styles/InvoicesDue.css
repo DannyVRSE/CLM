@@ -53,7 +53,7 @@
 .invoicesDue-table-container {
   max-height: 75%; /* Ensures it respects the parent container's height */
   overflow-y: auto; /* Enables vertical scrolling */
-  overflow-x: hidden; /* Hides horizontal overflow */
+  overflow-x: auto; /* Hides horizontal overflow */
 }
 
 .invoicesDue-table {

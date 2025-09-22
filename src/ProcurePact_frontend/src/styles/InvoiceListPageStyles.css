@@ -89,9 +89,34 @@
 }
 
 /* Responsive: stack on mobile */
-@media (max-width: 600px) {
+@media (max-width: 850px) {
   .filter-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
     gap: 1em;
     font-size: 0.95em;
+    scrollbar-width: thin;
+    scrollbar-color: #e5e5e5 #fff;
+  }
+  .filter-container::-webkit-scrollbar {
+    height: 6px;
+  }
+  .filter-container::-webkit-scrollbar-thumb {
+    background: #e5e5e5;
+    border-radius: 3px;
+  }
+  .filter-container::-webkit-scrollbar-track {
+    background: #fff;
+  }
+
+  .invoice-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .invoice-container table {
+    min-width: 600px;
+    width: max-content;
+    /* display: block; */
   }
 }

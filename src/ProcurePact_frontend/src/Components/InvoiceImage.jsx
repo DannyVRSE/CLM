@@ -95,7 +95,7 @@ const InvoiceImage = () => {
   if (!invoiceData || !issuer || !recipient) return <div className="loading-container">Loading...</div>;
 
   return (
-    <div className="invoice-view-container ">
+    <div className=".invoice-view-image-container ">
       {/* Header */}
       <header className="invoice-header">
         <div className="invoice-issuer">

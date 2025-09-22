@@ -6,7 +6,6 @@ import "../styles/ConnectionStyles.css";
 import { ProcurePact_backend } from "declarations/ProcurePact_backend";
 import { useStore } from "../store/useStore";
 
-
 const tabOptions = [
   { label: "Mutual", key: "mutual" },
   { label: "Invitations", key: "invitations" },
@@ -23,23 +22,22 @@ const Connections = () => {
   const { myConnections, getConnections } = useStore();
 
   useEffect(() => {
-    
     if (principal) {
       fetchConnections(); // Call the async function
     }
   }, [principal, getConnections]);
 
-const fetchConnections = async () => {
-  try {
-    await getConnections(principal); // Call your async function here
-    console.log("Coonections before normalizing", myConnections);
-    const normalized = await normalizeConnections(myConnections);
-    console.log("Normalized Connections:", normalized);
-    setConnections(normalized);
-  } catch (error) {
-    console.error("Error fetching connections:", error);
-  }
-};
+  const fetchConnections = async () => {
+    try {
+      await getConnections(principal); // Call your async function here
+      console.log("Coonections before normalizing", myConnections);
+      const normalized = await normalizeConnections(myConnections);
+      console.log("Normalized Connections:", normalized);
+      setConnections(normalized);
+    } catch (error) {
+      console.error("Error fetching connections:", error);
+    }
+  };
 
   const request = async (principal) => {
     await ProcurePact_backend.requestConnection(principal)
@@ -68,9 +66,6 @@ const fetchConnections = async () => {
       .finally(getConnections());
   };
 
- 
-
-
   const normalizeConnections = async (connectionsArr) => {
     // Fetch user details for each connection
     const normalized = await Promise.all(
@@ -85,13 +80,13 @@ const fetchConnections = async () => {
           const response = await ProcurePact_backend.getUser(
             Principal.fromText(principalText)
           );
-            console.log("User details response:", response);
+          console.log("User details response:", response);
           if (response && response.length > 0) {
             userDetails = response[0];
             console.log("User details fetched:", userDetails);
           }
         } catch (e) {
-            console.error("Error fetching user details:", e);
+          console.error("Error fetching user details:", e);
         }
         return {
           ...connection,
@@ -103,8 +98,6 @@ const fetchConnections = async () => {
     );
     return normalized;
   };
-
- 
 
   // Tab content filter logic
   const getTabConnections = () => {
@@ -119,19 +112,16 @@ const fetchConnections = async () => {
     }
     return [];
   };
-  const handleRefresh = ()=> {
+  const handleRefresh = () => {
     if (principal) {
       fetchConnections(); // Call the async function
     }
-
-  }
+  };
 
   /*
   if (!connections || connections.length === 0) {
     return <div> Loading..... </div>;
   }*/
-
-
 
   return (
     <div className="main-connections-container">
@@ -171,8 +161,8 @@ const fetchConnections = async () => {
                   <thead>
                     <tr>
                       <th>Principal</th>
-                      <th>Name</th>
-                      <th>Email</th>
+                      <th className="hide-mobile">Name</th>
+                      <th className="hide-mobile">Email</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -180,8 +170,9 @@ const fetchConnections = async () => {
                     {getTabConnections().map((conn, idx) => (
                       <tr key={idx}>
                         <td>{conn.principal}</td>
-                        <td>{conn.name ?? "-"}</td>
-                        <td>{conn.email ?? "-"}</td>
+                        <td className="hide-mobile">{conn.name ?? "-"}</td>
+                        <td className="hide-mobile">{conn.email ?? "-"}</td>
+
                         <td>
                           <button className="remove-btn">Remove</button>
                         </td>
@@ -197,33 +188,45 @@ const fetchConnections = async () => {
               {getTabConnections().length === 0 ? (
                 <p className="no-connection">No invitations.</p>
               ) : (
-                <table className="connections-table">
-                  <thead>
-                    <tr>
-                      <th>Principal</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {getTabConnections().map((conn, idx) => (
-                      <tr key={idx}>
-                        <td>{conn.principal}</td>
-                        <td>{conn.name ?? "-"}</td>
-                        <td>{conn.email ?? "-"}</td>
-                        <td>
-                          <button
-                            onClick={() => acceptInvitation(conn.principal)}
-                            className="accept-btn"
-                          >
-                            Accept
-                          </button>
-                        </td>
+                <div className="table-scroll">
+                  <table className="connections-table">
+                    <thead>
+                      <tr>
+                        <th>Principal</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {getTabConnections().map((conn, idx) => (
+                        <tr key={idx}>
+                          <td>
+                            <div className="cell-scroll">{conn.principal}</div>
+                          </td>
+                          <td>
+                            <div className="cell-scroll">
+                              {conn.name ?? "-"}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="cell-scroll">
+                              {conn.email ?? "-"}
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => acceptInvitation(conn.principal)}
+                              className="accept-btn"
+                            >
+                              Accept
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           )}

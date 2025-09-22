@@ -1,6 +1,6 @@
 .main-connections-container{
     min-height: 70vh;
-    /* background-color: #fff; */
+    
 }
 
 .sub-connections-container {
@@ -146,4 +146,40 @@
   font-style: italic;
   margin-top: 20px;
   font-size: 20px;
+}
+
+
+@media (max-width: 1000px) {
+  
+  .connections-table td {
+    max-width: 30px;         /* Adjust as needed for ~10 chars */
+    overflow-x: auto;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+   
+    scrollbar-width: thin;   /* For Firefox */
+  }
+
+  .cell-scroll {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .table-scroll {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .connections-table  tr{
+    min-width: 500px; /* or however wide your table needs to be */
+  }
+  .hide-mobile {
+    display: none;
+  }
+  .header{
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .header .connection-button{
+    gap: 80px;
+  }
 }

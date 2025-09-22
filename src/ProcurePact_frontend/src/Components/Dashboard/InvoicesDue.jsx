@@ -102,7 +102,7 @@ const InvoicesDue = () => {
   return (
     <div className="invoicesDue">
       <div className="invoicesDue-header">
-        <h1 className="invoicesDue-title">Invoices Due</h1>
+        <h1 className="invoicesDue-title">Invoices </h1>
         <select
           className="invoicesDue-filter"
           value={filter}

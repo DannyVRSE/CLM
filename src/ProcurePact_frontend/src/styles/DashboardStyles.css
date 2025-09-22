@@ -19,7 +19,7 @@
 .main-dashboard-container .sub-container-3 {
   display: flex;
   width: 100%;
-  height: 300px;
+  height: fit-content
 }
 
 .sub-container-3 .invoice-container {
@@ -28,10 +28,18 @@
   border-radius: 20px;
   padding: 5px;
   height: 100%;
+  max-width: 90%;
 }
 
 .sub-container-3 .contract-container {
   flex: 1;
   margin-left: 1rem;
   border-radius: 20px;
+}
+@media (max-width: 850px){
+  .sub-container-3{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
 }

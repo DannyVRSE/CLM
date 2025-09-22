@@ -102,3 +102,9 @@
   box-shadow: 0 4px 16px rgba(255,136,0,0.15);
   outline: none;
 }
+
+@media (max-width: 850px) {
+  .hide-mobile {
+    display: none;
+  }
+} 

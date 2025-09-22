@@ -14,7 +14,7 @@ const InvoiceViewImage = () => {
     clearSelectedInvoiceID();
     
     console.log("Trying to go back.HELPPPP")
-  };
+  };  
 
   return (
     <div className='invoice-view-image-container'>

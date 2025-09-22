@@ -64,7 +64,7 @@
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 14px 0;
+  padding: 14px 10px;
   font-size: 1.1rem;
   color: #222;
   cursor: pointer;
@@ -84,18 +84,20 @@
 
 .auth-section {
   display: flex;
+  justify-content: center;
   align-items: center;
   margin-top: 32px;
-  padding: 14px 0;
+  padding: 14px 0px;
   font-size: 1.1rem;
   color: #222;
   cursor: pointer;
   border-radius: 8px;
   transition: background 0.2s, color 0.2s;
+  background-color: #ff5100;
 }
 
 .auth-section:hover {
-  background: #f6f5f2;
+  background-color: #f6f5f2;
   color: #ff5100;
 }
 
