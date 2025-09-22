@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import HeroPage from '../Components/Landing/HeroPage'
 import LandingProblem from '../Components/Landing/LandingProblem'
 import LandingSolution from '../Components/Landing/LandingSolution'
@@ -8,15 +8,16 @@ import '../styles/LandingPageStyles.css'
 import LandingPageNavbar from '../Components/Landing/LandingPageNavbar'
 
 const LandingPage = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <div className='landingPage-container'>
+    <div className="landingPage-container">
       <div className="myNavbar">
-        <LandingPageNavbar />
+        <LandingPageNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       </div>
-      <div className="content">
+      <div className="content" onClick={() => setMenuOpen(false)}>
         <HeroPage />
         <LandingProblem />
-        <LandingSolution/>
+        <LandingSolution />
         <FinalCTA />
         <Footer />
       </div>
